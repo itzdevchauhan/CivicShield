@@ -1,0 +1,533 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CivicShield — Your City, Your Voice</title>
+<style>
+:root {
+  --bg: #f8f8ff;
+  --white: #ffffff;
+  --surface: #f0edff;
+  --purple: #7047eb;
+  --purple-dark: #4f2bc4;
+  --cyan: #0db9c6;
+  --text: #24213b;
+  --muted: #77748f;
+  --border: #e7e2fa;
+  --green: #16876c;
+  --orange: #b96b0b;
+  --red: #c43d62;
+  --shadow: 0 12px 35px rgba(73, 53, 140, .08);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+button, input, select, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+a { text-decoration: none; color: inherit; }
+.container { width: min(1160px, 92%); margin: auto; }
+
+header {
+  background: rgba(255,255,255,.96);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.nav {
+  min-height: 76px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.brand { display: flex; align-items: center; gap: 11px; font-weight: 800; font-size: 21px; }
+.logo {
+  display: grid; place-items: center;
+  width: 43px; height: 43px; border-radius: 14px;
+  color: white; font-size: 22px;
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  box-shadow: 0 6px 16px #7047eb30;
+}
+.brand span { color: var(--purple); }
+.nav-links { display: flex; align-items: center; gap: 25px; color: var(--muted); font-size: 14px; font-weight: 600; }
+.nav-links a:hover { color: var(--purple); }
+.nav-cta, .primary-btn {
+  border: 0; cursor: pointer; color: white; font-weight: 700;
+  background: linear-gradient(115deg, var(--purple), #8766f5);
+  border-radius: 12px; padding: 12px 18px;
+  box-shadow: 0 6px 16px #7047eb25;
+}
+.nav-cta:hover, .primary-btn:hover { transform: translateY(-1px); filter: brightness(1.04); }
+
+.hero {
+  padding: 66px 0 52px;
+  background:
+    radial-gradient(ellipse at 10% 5%, #e6ddff 0, transparent 40%),
+    radial-gradient(ellipse at 90% 30%, #d9f9fa 0, transparent 34%),
+    var(--white);
+  border-bottom: 1px solid var(--border);
+}
+.hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; align-items: center; gap: 42px; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--purple-dark); background: #eee9ff;
+  border: 1px solid #ded5ff; padding: 7px 13px;
+  border-radius: 30px; font-size: 12px; font-weight: 800; letter-spacing: .7px;
+}
+.hero h1 { font-size: clamp(37px, 5vw, 61px); line-height: 1.09; letter-spacing: -2px; margin: 20px 0 18px; }
+.hero h1 span { color: var(--purple); }
+.hero p { color: var(--muted); max-width: 540px; font-size: 17px; margin: 0 0 27px; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.secondary-btn {
+  display: inline-block; border: 1px solid var(--border); background: white;
+  color: var(--text); padding: 12px 18px; border-radius: 12px; font-weight: 700;
+}
+.secondary-btn:hover { border-color: var(--purple); color: var(--purple); }
+
+.hero-art {
+  min-height: 300px; position: relative; overflow: hidden;
+  display: grid; place-items: center; border: 1px solid #e5defe;
+  border-radius: 32px;
+  background: linear-gradient(145deg, #f0ebff, #e6fbfc);
+}
+.art-circle {
+  position: absolute; width: 225px; height: 225px; border-radius: 50%;
+  background: linear-gradient(145deg, #b8a5ff, #85e8e9);
+  opacity: .65;
+}
+.shield {
+  position: relative; width: 135px; height: 155px;
+  display: grid; place-items: center; color: white; font-size: 54px;
+  background: linear-gradient(145deg, var(--purple), #947aff 60%, var(--cyan));
+  clip-path: polygon(50% 0, 93% 16%, 88% 66%, 72% 85%, 50% 100%, 28% 85%, 12% 66%, 7% 16%);
+  filter: drop-shadow(0 14px 15px #7047eb35);
+}
+.float-card {
+  position: absolute; background: white; border: 1px solid var(--border);
+  padding: 12px 15px; border-radius: 15px; box-shadow: var(--shadow);
+  font-size: 12px; font-weight: 700;
+}
+.float-card small { display: block; color: var(--muted); font-weight: 500; }
+.fc-one { top: 35px; left: 20px; }
+.fc-two { right: 16px; bottom: 35px; }
+
+.stats { padding: 27px 0; }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.stat-card {
+  background: white; border: 1px solid var(--border); border-radius: 18px;
+  padding: 20px; display: flex; align-items: center; gap: 14px;
+  box-shadow: var(--shadow);
+}
+.stat-icon {
+  width: 47px; height: 47px; flex-shrink: 0; display: grid; place-items: center;
+  border-radius: 14px; background: #eee9ff; color: var(--purple); font-size: 22px;
+}
+.stat-card:nth-child(2) .stat-icon { background: #fff2dd; color: var(--orange); }
+.stat-card:nth-child(3) .stat-icon { background: #e1f8fa; color: #087f89; }
+.stat-card:nth-child(4) .stat-icon { background: #def7ed; color: var(--green); }
+.stat-number { font-size: 26px; line-height: 1.2; font-weight: 800; }
+.stat-label { color: var(--muted); font-size: 12px; margin-top: 5px; }
+
+.section { padding: 28px 0 65px; }
+.section-heading { margin-bottom: 23px; }
+.section-heading h2 { font-size: 29px; margin: 0 0 5px; letter-spacing: -.6px; }
+.section-heading p { margin: 0; color: var(--muted); }
+.workspace { display: grid; grid-template-columns: 350px minmax(0, 1fr); gap: 23px; align-items: start; }
+.panel {
+  background: white; border: 1px solid var(--border); border-radius: 22px;
+  padding: 24px; box-shadow: var(--shadow);
+}
+.panel h3 { font-size: 19px; margin: 0 0 5px; }
+.panel-sub { color: var(--muted); font-size: 13px; margin: 0 0 22px; }
+.field { margin-bottom: 16px; }
+label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 7px; }
+input, select, textarea {
+  width: 100%; padding: 12px 13px; color: var(--text);
+  border: 1px solid #dedbed; border-radius: 11px;
+  background: #fdfcff; outline: none; transition: .2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--purple); box-shadow: 0 0 0 3px #7047eb15;
+}
+textarea { min-height: 115px; resize: vertical; }
+.form-note { color: var(--muted); font-size: 12px; margin: 11px 0 0; }
+.primary-btn { width: 100%; padding: 13px; }
+.primary-btn:disabled { opacity: .6; cursor: wait; transform: none; }
+.message { display: none; padding: 11px 13px; border-radius: 10px; font-size: 13px; margin-bottom: 14px; }
+.message.show { display: block; }
+.message.success { background: #e2f8ef; color: #14664e; }
+.message.error { background: #fff0f2; color: #a52f4d; }
+
+.reports-panel { min-width: 0; }
+.report-toolbar { display: grid; grid-template-columns: minmax(140px, 1.5fr) 1fr 1fr; gap: 10px; margin: 17px 0; }
+.report-toolbar input, .report-toolbar select { font-size: 13px; padding: 11px; }
+.report-topline { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.refresh-btn, .clear-btn {
+  background: #f1edff; color: var(--purple-dark); border: 1px solid #e0d8ff;
+  padding: 9px 12px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer;
+}
+.refresh-btn:hover, .clear-btn:hover { background: #e7e0ff; }
+.report-list { display: grid; gap: 13px; }
+.report-card { padding: 19px; border: 1px solid var(--border); border-radius: 17px; background: white; }
+.report-card:hover { border-color: #c9baff; box-shadow: 0 8px 25px #7047eb0d; }
+.report-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.report-card h4 { margin: 0 0 6px; font-size: 17px; overflow-wrap: anywhere; }
+.category-label { color: var(--purple-dark); background: #f0ebff; padding: 4px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; display: inline-block; }
+.status { padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; white-space: nowrap; }
+.status-pending { background: #fff2dc; color: #995a08; }
+.status-progress { background: #e1f8fa; color: #087780; }
+.status-resolved { background: #def7ed; color: #147052; }
+.report-description { margin: 12px 0; color: #625f79; font-size: 14px; overflow-wrap: anywhere; white-space: pre-wrap; }
+.report-meta { display: flex; flex-wrap: wrap; gap: 12px; color: var(--muted); font-size: 12px; }
+.report-empty, .report-error { text-align: center; background: white; border: 1px dashed #d9d2f0; border-radius: 16px; padding: 35px 15px; color: var(--muted); }
+.report-empty strong, .report-error strong { display: block; color: var(--text); margin-bottom: 5px; }
+footer { background: white; border-top: 1px solid var(--border); padding: 25px 0; color: var(--muted); font-size: 13px; }
+.footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.toast {
+  position: fixed; bottom: 22px; right: 22px; z-index: 20; max-width: 340px;
+  padding: 14px 18px; border-radius: 13px; background: #24213b; color: white;
+  box-shadow: var(--shadow); opacity: 0; transform: translateY(10px); pointer-events: none; transition: .25s;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+@media(max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr  .8fr; gap: 20px; }
+  .workspace { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media(max-width: 620px) {
+  .nav { min-height: 68px; }
+  .nav-links { gap: 12px; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .hero { padding: 43px 0 35px; }
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-art { min-height: 245px; }
+  .hero h1 { letter-spacing: -1px; }
+  .stats-grid { gap: 10px; }
+  .stat-card { padding: 13px; gap: 9px; }
+  .stat-icon { width: 38px; height: 38px; font-size: 18px; }
+  .stat-number { font-size: 22px; }
+  .stat-label { font-size: 11px; }
+  .report-toolbar { grid-template-columns: 1fr; }
+  .panel { padding: 18px; }
+  .section-heading h2 { font-size: 25px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a href="#" class="brand"><div class="logo">🛡</div><div>Civic<span>Shield</span></div></a>
+    <nav class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#reports">Community Reports</a>
+      <a href="#report" class="nav-cta">Report an Issue +</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="home">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow">✦ COMMUNITY POWERED · CITY IMPROVED</div>
+      <h1>Your city.<br>Your voice.<br><span>Real change.</span></h1>
+      <p>See a problem in your neighbourhood? Report it, bring attention to it, and help make your community a better place for everyone.</p>
+      <div class="hero-actions">
+        <a href="#report" class="primary-btn">Report an Issue&nbsp; ↗</a>
+        <a href="#reports" class="secondary-btn">Explore Reports ↓</a>
+      </div>
+    </div>
+    <div class="hero-art" aria-label="CivicShield community protection illustration">
+      <div class="art-circle"></div>
+      <div class="shield">✓</div>
+      <div class="float-card fc-one">✦ Community first<small>Every report matters</small></div>
+      <div class="float-card fc-two">📍 Local issues<small>Make your voice count</small></div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="container stats-grid">
+    <div class="stat-card"><div class="stat-icon">▤</div><div><div class="stat-number" id="totalCount">—</div><div class="stat-label">Total Reports</div></div></div>
+    <div class="stat-card"><div class="stat-icon">◷</div><div><div class="stat-number" id="pendingCount">—</div><div class="stat-label">Pending</div></div></div>
+    <div class="stat-card"><div class="stat-icon">↻</div><div><div class="stat-number" id="progressCount">—</div><div class="stat-label">In Progress</div></div></div>
+    <div class="stat-card"><div class="stat-icon">✓</div><div><div class="stat-number" id="resolvedCount">—</div><div class="stat-label">Resolved</div></div></div>
+  </div>
+</section>
+
+<section class="section" id="report">
+  <div class="container">
+    <div class="section-heading">
+      <h2>Make a difference today</h2>
+      <p>Share a local issue so your community can see it.</p>
+    </div>
+    <div class="workspace">
+      <div class="panel">
+        <h3>✦ Submit a Report</h3>
+        <p class="panel-sub">Describe the issue clearly and accurately.</p>
+        <div id="formMessage" class="message" role="status"></div>
+        <form id="reportForm">
+          <div class="field">
+            <label for="title">Issue title *</label>
+            <input id="title" name="title" maxlength="120" placeholder="e.g. Broken road near school" required>
+          </div>
+          <div class="field">
+            <label for="category">Category *</label>
+            <select id="category" name="category" required>
+              <option value="">Choose a category</option>
+              <option>Road Damage</option>
+              <option>Garbage</option>
+              <option>Water Supply</option>
+              <option>Streetlight</option>
+              <option>Drainage / Flooding</option>
+              <option>Public Safety</option>
+              <option>Public Property</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="location">Location *</label>
+            <input id="location" name="location" maxlength="180" placeholder="Area, street or landmark" required>
+          </div>
+          <div class="field">
+            <label for="description">Description *</label>
+            <textarea id="description" name="description" maxlength="2000" placeholder="Explain what happened and where..." required></textarea>
+          </div>
+          <button type="submit" id="submitBtn" class="primary-btn">Submit Report&nbsp; →</button>
+          <p class="form-note">* Required fields. Please do not include private or sensitive information.</p>
+        </form>
+      </div>
+
+      <div class="panel reports-panel" id="reports">
+        <div class="report-topline">
+          <div><h3>Community Reports</h3><p class="panel-sub" style="margin:4px 0 0">Local issues shared by the community</p></div>
+          <button id="refreshBtn" type="button" class="refresh-btn">↻ Refresh</button>
+        </div>
+        <div class="report-toolbar">
+          <input type="search" id="searchInput" placeholder="⌕ Search reports..." aria-label="Search reports">
+          <select id="categoryFilter" aria-label="Filter by category">
+            <option value="">All categories</option>
+            <option>Road Damage</option><option>Garbage</option><option>Water Supply</option>
+            <option>Streetlight</option><option>Drainage / Flooding</option>
+            <option>Public Safety</option><option>Public Property</option><option>Other</option>
+          </select>
+          <select id="statusFilter" aria-label="Filter by status">
+            <option value="">All statuses</option>
+            <option>Pending</option><option>In Progress</option><option>Resolved</option>
+          </select>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px">
+          <span id="resultsLabel" style="font-size:12px;color:var(--muted)">Loading reports...</span>
+          <button id="clearBtn" class="clear-btn" type="button">Clear filters</button>
+        </div>
+        <div id="reportList" class="report-list" aria-live="polite">
+          <div class="report-empty">Loading community reports...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div class="brand" style="font-size:16px"><div class="logo" style="width:32px;height:32px;border-radius:10px;font-size:16px">🛡</div><div>Civic<span>Shield</span></div></div>
+    <div>Built for stronger communities · Every voice matters.</div>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const reportForm = document.getElementById('reportForm');
+const reportList = document.getElementById('reportList');
+const formMessage = document.getElementById('formMessage');
+const submitBtn = document.getElementById('submitBtn');
+const searchInput = document.getElementById('searchInput');
+const categoryFilter = document.getElementById('categoryFilter');
+const statusFilter = document.getElementById('statusFilter');
+const resultsLabel = document.getElementById('resultsLabel');
+
+let allReports = [];
+let isLoading = false;
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  window.setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function showFormMessage(message, type) {
+  formMessage.textContent = message;
+  formMessage.className = 'message show ' + type;
+}
+
+function updateStats(reports) {
+  document.getElementById('totalCount').textContent = reports.length;
+  document.getElementById('pendingCount').textContent =
+    reports.filter(r => (r.status || 'Pending') === 'Pending').length;
+  document.getElementById('progressCount').textContent =
+    reports.filter(r => r.status === 'In Progress').length;
+  document.getElementById('resolvedCount').textContent =
+    reports.filter(r => r.status === 'Resolved').length;
+}
+
+function makeElement(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = text;
+  return element;
+}
+
+function formatDate(value) {
+  if (!value) return 'Date unavailable';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Date unavailable';
+  return date.toLocaleDateString(undefined, {year:'numeric', month:'short', day:'numeric'});
+}
+
+function renderReports() {
+  const query = searchInput.value.trim().toLowerCase();
+  const category = categoryFilter.value;
+  const status = statusFilter.value;
+
+  const filtered = allReports.filter(report => {
+    const text = [report.title, report.category, report.location, report.description]
+      .filter(Boolean).join(' ').toLowerCase();
+    return text.includes(query)
+      && (!category || report.category === category)
+      && (!status || (report.status || 'Pending') === status);
+  });
+
+  resultsLabel.textContent = `${filtered.length} report${filtered.length === 1 ? '' : 's'} found`;
+  reportList.replaceChildren();
+
+  if (filtered.length === 0) {
+    const empty = makeElement('div', 'report-empty');
+    empty.append(makeElement('strong', '', allReports.length ? 'No matching reports' : 'No reports yet'));
+    empty.append(document.createTextNode(allReports.length
+      ? 'Try changing your search or filters.'
+      : 'Be the first to report a local issue.'));
+    reportList.append(empty);
+    return;
+  }
+
+  filtered.forEach(report => {
+    const card = makeElement('article', 'report-card');
+    const top = makeElement('div', 'report-card-top');
+    const titleArea = makeElement('div');
+    titleArea.append(makeElement('h4', '', report.title || 'Untitled report'));
+    titleArea.append(makeElement('span', 'category-label', report.category || 'Other'));
+
+    const status = report.status || 'Pending';
+    const statusClass = status === 'Resolved' ? 'status-resolved'
+      : status === 'In Progress' ? 'status-progress' : 'status-pending';
+    const statusBadge = makeElement('span', 'status ' + statusClass, status);
+
+    top.append(titleArea, statusBadge);
+    card.append(top);
+    card.append(makeElement('p', 'report-description', report.description || 'No description provided.'));
+
+    const meta = makeElement('div', 'report-meta');
+    meta.append(makeElement('span', '', '📍 ' + (report.location || 'Location not provided')));
+    meta.append(makeElement('span', '', '📅 ' + formatDate(report.createdAt)));
+    if (report._id) meta.append(makeElement('span', '', 'ID: ' + String(report._id).slice(-6)));
+    card.append(meta);
+    reportList.append(card);
+  });
+}
+
+async function loadReports() {
+  if (isLoading) return;
+  isLoading = true;
+  document.getElementById('refreshBtn').disabled = true;
+  document.getElementById('refreshBtn').textContent = 'Loading...';
+
+  try {
+    const response = await fetch('/api/reports');
+    if (!response.ok) throw new Error('Server returned ' + response.status);
+    const data = await response.json();
+    allReports = Array.isArray(data) ? data : (data.reports || []);
+    updateStats(allReports);
+    renderReports();
+  } catch (error) {
+    reportList.replaceChildren();
+    const message = makeElement('div', 'report-error');
+    message.append(makeElement('strong', '', 'Could not load reports'));
+    message.append(document.createTextNode('Make sure the CivicShield server is running, then refresh the page.'));
+    reportList.append(message);
+    resultsLabel.textContent = 'Connection problem';
+    console.error('Loading reports failed:', error);
+  } finally {
+    isLoading = false;
+    document.getElementById('refreshBtn').disabled = false;
+    document.getElementById('refreshBtn').textContent = '↻ Refresh';
+  }
+}
+
+reportForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  formMessage.className = 'message';
+
+  const payload = {
+    title: document.getElementById('title').value.trim(),
+    category: document.getElementById('category').value,
+    location: document.getElementById('location').value.trim(),
+    description: document.getElementById('description').value.trim()
+  };
+
+  if (!payload.title || !payload.category || !payload.location || !payload.description) {
+    showFormMessage('Please fill in all required fields.', 'error');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+
+  try {
+    const response = await fetch('/api/reports', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.message || result.error || 'Unable to submit this report.');
+
+    reportForm.reset();
+    showFormMessage('Your report was submitted successfully!', 'success');
+    showToast('Report submitted successfully!');
+    await loadReports();
+  } catch (error) {
+    showFormMessage(error.message || 'Something went wrong. Please try again.', 'error');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit Report →';
+  }
+});
+
+searchInput.addEventListener('input', renderReports);
+categoryFilter.addEventListener('change', renderReports);
+statusFilter.addEventListener('change', renderReports);
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  searchInput.value = '';
+  categoryFilter.value = '';
+  statusFilter.value = '';
+  renderReports();
+});
+
+document.getElementById('refreshBtn').addEventListener('click', loadReports);
+
+loadReports();
+</script>
+</body>
+</html>
