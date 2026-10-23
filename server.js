@@ -86,7 +86,7 @@ async function startServer() {
         await mongoose.connect(process.env.MONGODB_URI);
         console.log("MongoDB Atlas connected successfully!");
 
-        app.listen(PORT, () => {
+        app.listen(PORT, '0.0.0.0', () => {
             console.log(`CivicShield running at http://localhost:${PORT}`);
         });
     } catch (error) {
