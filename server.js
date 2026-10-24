@@ -26,7 +26,29 @@ const reportSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-const Report = mongoose.model("Report", reportSchema);
+const Report = mongoose.models.Report ||
+    mongoose.model("Report", reportSchema);
+
+// Connect to MongoDB before handling requests.
+app.use(async (req, res, next) => {
+    try {
+        if (mongoose.connection.readyState !== 1) {
+            if (!process.env.MONGODB_URI) {
+                throw new Error("MONGODB_URI is missing");
+            }
+
+            await mongoose.connect(process.env.MONGODB_URI);
+            console.log("MongoDB Atlas connected successfully!");
+        }
+
+        next();
+    } catch (error) {
+        console.error("MongoDB connection error:", error.message);
+        res.status(500).json({
+            message: "Database connection failed. Please try again."
+        });
+    }
+});
 
 app.get("/api/status", (req, res) => {
     res.json({
@@ -42,6 +64,7 @@ app.get("/api/reports", async (req, res) => {
         const reports = await Report.find().sort({ createdAt: -1 });
         res.json(reports);
     } catch (error) {
+        console.error("Load reports error:", error.message);
         res.status(500).json({ message: "Could not load reports." });
     }
 });
@@ -77,22 +100,12 @@ app.post("/api/reports", async (req, res) => {
     }
 });
 
-async function startServer() {
-    try {
-        if (!process.env.MONGODB_URI) {
-            throw new Error("MONGODB_URI is missing from .env");
-        }
+// Export the Express app for Vercel.
+module.exports = app;
 
-        await mongoose.connect(process.env.MONGODB_URI);
-        console.log("MongoDB Atlas connected successfully!");
-
-        app.listen(PORT, '0.0.0.0', () => {
-            console.log(`CivicShield running at http://localhost:${PORT}`);
-        });
-    } catch (error) {
-        console.error("Startup error:", error.message);
-        process.exit(1);
-    }
+// Start a regular server when running locally.
+if (!process.env.VERCEL) {
+    app.listen(PORT, "0.0.0.0", () => {
+        console.log(`CivicShield running at http://localhost:${PORT}`);
+    });
 }
-
-startServer();
